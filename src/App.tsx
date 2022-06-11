@@ -1,25 +1,50 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ThemeProvider } from "@emotion/react";
+import { StyledEngineProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+import React, { useEffect } from "react";
+import { BrowserRouter, Route, Switch, Link, Redirect } from "react-router-dom";
+import "./App.css";
+import Login from "./container/Login";
+import Home from "./container/Home";
+import { useHistory } from "react-router-dom";
 
+const theme = createTheme({});
 function App() {
+  const history = useHistory();
+  const token = localStorage.getItem("token");
+  console.log("token: ", token);
+  useEffect(() => {
+    if (!token) {
+      <Redirect
+        to={{
+          pathname: "/login",
+        }}
+      />;
+    } 
+    // else {
+    //   <Redirect
+    //     to={{
+    //       pathname: "/home",
+    //     }}
+    //   />;
+    // }
+  }, [token]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <Switch>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route exact path="/home">
+              <Home />
+            </Route>
+          </Switch>
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </BrowserRouter>
   );
 }
 
